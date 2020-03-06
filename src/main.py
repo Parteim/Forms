@@ -1,6 +1,9 @@
 import tkinter as tk
 from tkinter import ttk
-import mysql.connector as mycon
+from src.SQL_requests import SQLRequests
+
+LOGIN = ''
+PASSWORD = ''
 
 COLOR_1 = '#022F40'
 COLOR_2 = '#046E8F'
@@ -9,6 +12,7 @@ COLOR_2 = '#046E8F'
 class MainScreen(tk.Frame):
     def __init__(self, root):
         super().__init__(root)
+        self.connector = None
         self.login_screen_initial()
 
     def login_screen_initial(self):
@@ -18,35 +22,28 @@ class MainScreen(tk.Frame):
         fields_frame = tk.Frame(root, bg=COLOR_1)
         fields_frame.pack(expand=True)
 
-        login_field = tk.Entry(fields_frame, width=50)
-        password_field = tk.Entry(fields_frame, width=50)
+        login_label = tk.Label(fields_frame, text='Login', bg=COLOR_1, foreground='#fff')
+        password_label = tk.Label(fields_frame, text='Password', bg=COLOR_1, foreground='#fff')
 
-        login_field.pack(ipady=3)
-        password_field.pack(pady=10, ipady=3)
+        self.login_field = tk.Entry(fields_frame, width=50)
+        self.password_field = tk.Entry(fields_frame, width=50)
 
-        agree_btn = tk.Button(fields_frame, text='OK', background=COLOR_2, borderwidth=0, width=25)
+        login_label.pack()
+        self.login_field.pack(ipady=3)
+        password_label.pack()
+        self.password_field.pack(pady=10, ipady=3)
+
+        agree_btn = tk.Button(fields_frame, text='OK', background=COLOR_2, borderwidth=0, width=25, command=self.sign_in_db)
         agree_btn.bind('<Button-1>')
         agree_btn.pack(ipady=3)
 
+    def sign_in_db(self):
 
-def _main():
-    conn = mycon.connection.MySQLConnection(
-        user='root', password='1234',
-        host='127.0.0.1',
-        database='lessons'
-    )
-
-    curs = conn.cursor(buffered=True)
-
-    curs.execute(
-        """
-        SELECT * 
-        FROM person
-        """
-    )
-
-    for row in curs:
-        print(row)
+        self.connector = SQLRequests(
+            self.login_field.get(),
+            self.password_field.get(),
+            'lessons',
+        )
 
 
 if __name__ == '__main__':
