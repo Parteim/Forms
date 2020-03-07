@@ -25,7 +25,6 @@ class SQLRequests:
 
     def get(self, table, **kwargs):
         """
-
         :param table:   --
         :param kwargs:  'field'     - the field for the condition
                         'sign'      - the sign a condition
@@ -44,6 +43,6 @@ class SQLRequests:
 
         self.cursor.execute(request)
 
-        for row in self.cursor:
-            print(row)
+        return self.cursor
+
 
